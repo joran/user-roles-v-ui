@@ -1,7 +1,7 @@
 {
-  "name": "v-user-roles",
+  "name": "user-roles-v-ui",
   "version": "1.0.0",
-  "description": "A Vue.js project",
+  "description": "A Vue.js front end to user-roles-service",
   "author": "Joran Stark <joran.stark@gmail.com>",
   "private": true,
   "scripts": {
