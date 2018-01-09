@@ -31,9 +31,8 @@
 </template>
 
 <script>
-  import Alert from './Alert';
   export default {
-    name: 'Users',
+    name: 'ListUsers',
     data () {
       return {
         users: [],
@@ -44,24 +43,39 @@
     methods:{
       fetchUsers(){
         this.$http.get("http://localhost:8080/api/user")
-          .then(function(response) {
-            this.users = response.body;
+          .then(results => {
+            console.log("Users.fetchUsers", results);
+            if(results.ok){
+              this.users = results.body;
+            } else {
+              this.$notify({
+                type:"error",
+                title: 'Något gick fel!',
+                text: 'Gick inte att hämta alla användare: ' + results.statusText
+              });
+            }
           })
       },
       deleteUser(userId){
         const fetchUsers = this.fetchUsers;
         this.$http.delete("http://localhost:8080/api/user/" + userId)
-        .then((response) => {
-          console.log("deleteUser 1");
-          this.$http.get("http://localhost:8080/api/user")
-          .then(function(response2){
-            console.log("deleteUser 2", response2);
-            this.alert = userId + ' har tagits bort';
-            this.users = response2.body;
-          })
-        });
-//          this.$router.push({path: '/user', query: {alert: userId + ' har tagits bort'}}))
-      },
+        .then(results => {
+          console.log("Users.deleteUser", results);
+          if(results.ok){
+            this.$notify({
+              type:"success",
+              title: 'Ta bort anvädare',
+              text: userId + ' har blivit borttagen'
+            });
+            fetchUsers();
+          } else {
+            this.$notify({
+              type:"error",
+              title: 'Något gick fel!',
+              text: 'Gick inte att ta bort ' + userId + ': ' + results.statusText
+            });
+          }
+        })},
       filterBy(list, value){
         const rolesFormatter = this.rolesFormatter;
         return list.filter(function(user){
@@ -73,16 +87,7 @@
       }
     },
     created: function(){
-      if (this.$route.query.alert){
-        this.alert = this.$route.query.alert;
-      }
       this.fetchUsers();
-    },
-    updated: function(){
-    //  this.fetchUsers();
-    },
-    components:{
-      Alert
     }
   }
 </script>

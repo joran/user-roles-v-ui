@@ -1,6 +1,5 @@
 <template>
   <div class="add container">
-    <Alert v-if="alert" v-bind:message="alert" />
     <h1 class="page-header">Redigera Användare</h1>
     <form v-on:submit="updateUser">
         <div class="well">
@@ -23,13 +22,11 @@
 </template>
 
 <script>
-    import Alert from './Alert'
     export default {
     name: 'editUser',
     data () {
         return {
-        user: {},
-        alert:''
+          user: {}
         }
     },
     methods: {
@@ -41,7 +38,12 @@
         },
         updateUser(e){
             if(!this.user.userId || !this.user.name ){
-                this.alert = 'Please fill in all required fields';
+              this.$notify({
+                type: 'error',
+                title: 'Felaktiga värden',
+                text: 'Vänligen fyll i alla obligatoriska fält',
+                duration: -1
+              });
             } else {
                 let updatedUser = {
                   name: this.user.name,
@@ -51,7 +53,13 @@
 
                 this.$http.put('http://localhost:8080/api/user/' + updatedUser.userId, updatedUser)
                     .then(function(response){
-                        this.$router.push({path: '/', query: {alert: "Uppdateringar av " + updatedUser.name + " sparade"}});
+                      this.$notify({
+                        type: 'success',
+                        title: 'Redigera användare',
+                        text: response.body.name + ' har blivit uppdaterad'
+                      });
+
+                      this.$router.push({path: '/user'});
                     });
 
                 e.preventDefault();
@@ -61,9 +69,6 @@
     },
     created: function(){
         this.fetchUsers(this.$route.params.userId);
-    },
-  components: {
-        Alert
     }
     }
 </script>

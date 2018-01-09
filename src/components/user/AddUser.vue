@@ -1,6 +1,5 @@
 <template>
   <div class="add container">
-    <Alert v-if="alert" v-bind:message="alert" />
     <h1 class="page-header">Ny Användare</h1>
     <form v-on:submit="addUser">
         <div class="well">
@@ -23,19 +22,22 @@
 </template>
 
 <script>
-    import Alert from './Alert'
     export default {
     name: 'addUser',
     data () {
         return {
-        user: {},
-        alert:''
+        user: {}
         }
     },
     methods: {
         addUser(e){
             if(!this.user.userId || !this.user.name ){
-                this.alert = 'Please fill in all required fields';
+              this.$notify({
+                type:"error",
+                title: 'Felaktiga värden',
+                text: 'Vänligen fyll i alla obligatoriska fält',
+                duration: -100
+              });
             } else {
                 let newUser = {
                   name: this.user.name,
@@ -45,16 +47,18 @@
 
                 this.$http.post('http://localhost:8080/api/user', newUser)
                     .then(function(response){
-                        this.$router.push({path: '/', query: {alert: 'Ny användare skapad: ' + newUser.name}});
+                        this.$notify({
+                          type:"success",
+                          title: 'Ny användare',
+                          text: response.body.name + ' har lagts till'
+                        });
+                        this.$router.push({path: '/' });
                     });
 
                 e.preventDefault();
             }
             e.preventDefault();
         }
-    },
-    components: {
-        Alert
     }
     }
 </script>
