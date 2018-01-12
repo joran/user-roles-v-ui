@@ -52,7 +52,7 @@
                           title: 'Ny användare',
                           text: response.body.name + ' har lagts till'
                         });
-                        this.$router.push({path: '/' });
+                        this.$router.push({path: '/user' });
                     });
 
                 e.preventDefault();

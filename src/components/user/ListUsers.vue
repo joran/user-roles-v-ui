@@ -4,7 +4,7 @@
     <h1 class="page-header">Användare</h1>
     <input class="form-control" placeholder="Sök användare" v-model="filterInput">
     <br/>
-     <table class="table table-striped">
+     <table class="table table-striped table-bordered">
       <thead>
         <tr>
           <th>Användarid</th>
